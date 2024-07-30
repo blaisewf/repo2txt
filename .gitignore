@@ -1,4 +1,3 @@
-*.txt
 *.pyd
 
 build/
