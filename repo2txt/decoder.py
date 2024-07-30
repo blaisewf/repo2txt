@@ -17,8 +17,16 @@ def is_git_installed():
         return False
 
 
-def clone_repo(repo_url, clone_dir):
+def convert_to_full_url(repo_url_or_shorthand):
+    """Convert shorthand 'user/repo' format to full URL format."""
+    if repo_url_or_shorthand.startswith("http"):
+        return repo_url_or_shorthand  # Already a full URL
+    return f"https://github.com/{repo_url_or_shorthand}"
+
+
+def clone_repo(repo_url_or_shorthand, clone_dir):
     """Clone the GitHub repository into the specified directory."""
+    repo_url = convert_to_full_url(repo_url_or_shorthand)
     if is_git_installed():
         subprocess.run(["git", "clone", repo_url, clone_dir], check=True)
     else:
