@@ -44,3 +44,6 @@ This command will:
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
+
+## References
+- https://github.com/kirill-markin/repo-to-text
