@@ -18,9 +18,6 @@ cd repo2txt
 pip install .
 ```
 
-> [!WARNING]  
-> Git is required to clone the repository. If you don't have Git installed, you can download it from [git-scm.com](https://git-scm.com/).
-
 ## Usage
 
 Once installed, you can use the CLI command `repo2txt` to process a GitHub repository. Here’s the basic syntax:
@@ -46,4 +43,5 @@ This command will:
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
 
 ## References
+
 - https://github.com/kirill-markin/repo-to-text

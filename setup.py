@@ -9,7 +9,7 @@ with codecs.open(os.path.join(here, "README.md"), encoding="utf-8") as fh:
 
 setup(
     name="repo2txt",
-    version="0.0.1",
+    version="0.0.2",
     author="Blaise",
     author_email="blaie@applio.org",
     description="A tool to clone GitHub repositories, document their directory structure, and extract file contents into a text file.",
@@ -19,6 +19,7 @@ setup(
     packages=find_packages(),
     install_requires=[
         "click",
+        "wget"
     ],
     entry_points={
         "console_scripts": [

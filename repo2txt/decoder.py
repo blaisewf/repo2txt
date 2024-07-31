@@ -1,20 +1,8 @@
 import os
 import shutil
-import subprocess
-
-
-def is_git_installed():
-    """Check if Git is installed."""
-    try:
-        subprocess.run(
-            ["git", "--version"],
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE,
-            check=True,
-        )
-        return True
-    except FileNotFoundError:
-        return False
+import zipfile
+import wget
+from tqdm import tqdm
 
 
 def convert_to_full_url(repo_url_or_shorthand):
@@ -24,30 +12,39 @@ def convert_to_full_url(repo_url_or_shorthand):
     return f"https://github.com/{repo_url_or_shorthand}"
 
 
-def clone_repo(repo_url_or_shorthand, clone_dir):
-    """Clone the GitHub repository into the specified directory."""
-    repo_url = convert_to_full_url(repo_url_or_shorthand)
-    if is_git_installed():
-        subprocess.run(["git", "clone", repo_url, clone_dir], check=True)
-    else:
-        raise RuntimeError(
-            "Git is not installed. Please install Git to clone repositories."
-        )
-
-
 def extract_repo_name_from_url(repo_url):
     """Extract the repository name from the GitHub URL."""
     repo_name = repo_url.rstrip("/").split("/")[-1]
     return repo_name.split(".")[0] if "." in repo_name else repo_name
 
 
+def download_repo(repo_url_or_shorthand, download_dir):
+    """Download the GitHub repository as a ZIP file and extract it."""
+    repo_url = convert_to_full_url(repo_url_or_shorthand)
+    repo_name = extract_repo_name_from_url(repo_url)
+    zip_url = f"{repo_url}/archive/refs/heads/main.zip"
+    zip_path = os.path.join(download_dir, f"{repo_name}.zip")
+
+    # Ensure the download directory exists
+    if not os.path.exists(download_dir):
+        os.makedirs(download_dir)
+
+    print(f"Downloading {zip_url} to {zip_path}")
+    wget.download(zip_url, zip_path)
+
+    extract_dir = os.path.join(download_dir, repo_name)
+    with zipfile.ZipFile(zip_path, "r") as zip_ref:
+        for file in tqdm(zip_ref.namelist(), desc="Extracting files"):
+            zip_ref.extract(file, extract_dir)
+
+    os.remove(zip_path)  # Clean up the ZIP file
+    return extract_dir
+
+
 def get_directory_structure(root_dir):
     """Get the directory structure in a tree format, ignoring .git directory."""
     lines = []
     for root, dirs, files in os.walk(root_dir):
-        if ".git" in dirs:
-            dirs.remove(".git")  # Avoid walking into .git directory
-
         level = root.replace(root_dir, "").count(os.sep)
         indent = " " * 4 * level
         lines.append(f"{indent}├── {os.path.basename(root)}/")
@@ -73,14 +70,18 @@ def read_file_contents(file_path):
 def extract_all_files_contents(root_dir):
     """Extract contents of all files in the directory, ignoring .git directory."""
     file_contents = {}
+    all_files = []
     for root, _, files in os.walk(root_dir):
         if ".git" in root:
             continue
-
         for file_name in files:
             file_path = os.path.join(root, file_name)
             relative_path = os.path.relpath(file_path, root_dir)
-            file_contents[relative_path] = read_file_contents(file_path)
+            all_files.append((relative_path, file_path))
+
+    for relative_path, file_path in tqdm(all_files, desc="Reading file contents"):
+        file_contents[relative_path] = read_file_contents(file_path)
+
     return file_contents
 
 
@@ -104,7 +105,9 @@ def write_output_file(output_file, directory_structure, file_contents):
         file.write(directory_structure)
         file.write("\n```\n")
 
-        for file_path, content in file_contents.items():
+        for file_path, content in tqdm(
+            file_contents.items(), desc="Writing file contents"
+        ):
             file.write(f"\nContents of {file_path}:\n```\n")
             file.write(content)
             file.write("\n```\n")
