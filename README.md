@@ -29,7 +29,7 @@ repo2txt --repo-url <repository_url> --output-file <output_file_path> --branch <
 ### Example
 
 ```sh
-repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt --branch develop --config repo2txt/config.json
+repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt --branch develop --config repo2txt/configs/config.json
 ```
 
 This command will:

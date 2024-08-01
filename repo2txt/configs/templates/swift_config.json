@@ -1,0 +1,11 @@
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        ".git",
+        "build",
+        "*.xcodeproj",
+        "*.xcworkspace",
+        "DerivedData"
+    ]
+}

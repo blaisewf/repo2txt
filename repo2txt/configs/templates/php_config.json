@@ -1,0 +1,10 @@
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        ".git",
+        "vendor",
+        "*.env",
+        "composer.lock"
+    ]
+}

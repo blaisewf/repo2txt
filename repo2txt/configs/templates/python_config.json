@@ -1,0 +1,12 @@
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        ".git",
+        "__pycache__",
+        "*.pyc",
+        ".venv",
+        "env",
+        ".env"
+    ]
+}

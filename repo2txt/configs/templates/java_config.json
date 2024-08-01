@@ -1,0 +1,13 @@
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        ".git",
+        "target",
+        "*.class",
+        "*.jar",
+        ".idea",
+        "*.iml",
+        ".project"
+    ]
+}

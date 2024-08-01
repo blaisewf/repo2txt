@@ -1,0 +1,14 @@
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        ".git",
+        "bin",
+        "obj",
+        "*.exe",
+        "*.dll",
+        ".vs",
+        "*.user",
+        "*.suo"
+    ]
+}
