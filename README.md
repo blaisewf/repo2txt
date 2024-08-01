@@ -23,13 +23,13 @@ pip install .
 Once installed, you can use the CLI command `repo2txt` to process a GitHub repository. Here’s the basic syntax:
 
 ```sh
-repo2txt --repo-url <repository_url> --output-file <output_file_path> --branch <branch_name>
+repo2txt --repo-url <repository_url> --output-file <output_file_path> --branch <branch_name> --config <config_file_path>
 ```
 
 ### Example
 
 ```sh
-repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt --branch develop
+repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt --branch develop --config repo2txt/config.json
 ```
 
 This command will:
@@ -37,6 +37,21 @@ This command will:
 1. Clone the repository from `https://github.com/example/repository.git`.
 2. Generate a text file `output.txt` containing the directory structure and contents of all files in the repository.
 3. Clean up the cloned repository directory.
+
+### Configuration
+
+In the config file you can specify which files you want to ignore when generating the text file. The config file should be a JSON file with the following structure:
+
+```json
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        "node_modules",
+        ".git"
+    ]
+}
+```
 
 ## License
 

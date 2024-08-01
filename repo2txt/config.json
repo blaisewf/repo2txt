@@ -1,0 +1,8 @@
+{
+    "ignore": [
+        "*.md",
+        "*.log",
+        "node_modules",
+        ".git"
+    ]
+}

@@ -33,7 +33,9 @@ def download_repo(repo_url_or_shorthand, download_dir, branch="main"):
     # Check if the branch exists by sending a head request
     response = requests.head(zip_url)
     if response.status_code == 404:
-        raise ValueError(f"The branch '{branch}' does not exist for the repository '{repo_url}'.")
+        raise ValueError(
+            f"The branch '{branch}' does not exist for the repository '{repo_url}'."
+        )
 
     print(f"Downloading {zip_url} to {zip_path}")
     wget.download(zip_url, zip_path)
@@ -47,16 +49,33 @@ def download_repo(repo_url_or_shorthand, download_dir, branch="main"):
     return extract_dir
 
 
-def get_directory_structure(root_dir):
-    """Get the directory structure in a tree format, ignoring .git directory."""
+def should_ignore(path, ignore_patterns):
+    """Determine if a file or directory should be ignored based on patterns."""
+    if not ignore_patterns:
+        return False
+    for pattern in ignore_patterns.get("ignore", []):
+        if pattern.startswith("*.") and path.endswith(pattern[1:]):
+            return True
+        if pattern in path:
+            return True
+    return False
+
+
+def get_directory_structure(root_dir, ignore_patterns=None):
+    """Get the directory structure in a tree format, ignoring .git directory and specified patterns."""
     lines = []
     for root, dirs, files in os.walk(root_dir):
+        if should_ignore(root, ignore_patterns):
+            continue
         level = root.replace(root_dir, "").count(os.sep)
         indent = " " * 4 * level
         lines.append(f"{indent}├── {os.path.basename(root)}/")
 
         subindent = " " * 4 * (level + 1)
         for file in files:
+            file_path = os.path.join(root, file)
+            if should_ignore(file_path, ignore_patterns):
+                continue
             lines.append(f"{subindent}├── {file}")
     return "\n".join(lines)
 
@@ -73,15 +92,17 @@ def read_file_contents(file_path):
         return f"[Error reading file: {e}]"
 
 
-def extract_all_files_contents(root_dir):
-    """Extract contents of all files in the directory, ignoring .git directory."""
+def extract_all_files_contents(root_dir, ignore_patterns=None):
+    """Extract contents of all files in the directory, ignoring .git directory and specified patterns."""
     file_contents = {}
     all_files = []
     for root, _, files in os.walk(root_dir):
-        if ".git" in root:
+        if should_ignore(root, ignore_patterns):
             continue
         for file_name in files:
             file_path = os.path.join(root, file_name)
+            if should_ignore(file_path, ignore_patterns):
+                continue
             relative_path = os.path.relpath(file_path, root_dir)
             all_files.append((relative_path, file_path))
 
