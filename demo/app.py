@@ -1,6 +1,6 @@
 import gradio as gr
 from repo2txt.decoder import (
-    clone_repo,
+    download_repo,
     get_directory_structure,
     extract_all_files_contents,
     write_output_file,
@@ -8,7 +8,7 @@ from repo2txt.decoder import (
 )
 
 
-def process_repository(repo_url_or_shorthand):
+def process_repository(repo_url_or_shorthand, branch):
     """Process the GitHub repository and return the content of the output file."""
     # Define the directory to clone into
     clone_dir = "temp_repo"
@@ -16,7 +16,7 @@ def process_repository(repo_url_or_shorthand):
 
     try:
         # Clone the repository
-        clone_repo(repo_url_or_shorthand, clone_dir)
+        download_repo(repo_url_or_shorthand, clone_dir, branch)
 
         # Get directory structure and file contents
         directory_structure = get_directory_structure(clone_dir)
@@ -47,6 +47,7 @@ with gr.Blocks(title="repo2txt") as demo:
             label="GitHub Repository URL or Shorthand",
             placeholder="e.g., user/repo or https://github.com/user/repo",
         )
+        branch_input = gr.Textbox(label="Branch", placeholder="main", default="main")
 
     process_button = gr.Button("Process Repository")
     txt_output = gr.File(label="Download txt file")
@@ -57,7 +58,9 @@ with gr.Blocks(title="repo2txt") as demo:
     )
 
     process_button.click(
-        process_repository, inputs=repo_url_input, outputs=[result_output, txt_output]
+        process_repository,
+        inputs=[repo_url_input, branch_input],
+        outputs=[result_output, txt_output],
     )
 
 # Launch the interface

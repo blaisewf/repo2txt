@@ -23,13 +23,13 @@ pip install .
 Once installed, you can use the CLI command `repo2txt` to process a GitHub repository. Here’s the basic syntax:
 
 ```sh
-repo2txt --repo-url <repository_url> --output-file <output_file_path>
+repo2txt --repo-url <repository_url> --output-file <output_file_path> --branch <branch_name>
 ```
 
 ### Example
 
 ```sh
-repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt
+repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt --branch develop
 ```
 
 This command will:

@@ -3,6 +3,7 @@ import shutil
 import zipfile
 import wget
 from tqdm import tqdm
+import requests
 
 
 def convert_to_full_url(repo_url_or_shorthand):
@@ -18,16 +19,21 @@ def extract_repo_name_from_url(repo_url):
     return repo_name.split(".")[0] if "." in repo_name else repo_name
 
 
-def download_repo(repo_url_or_shorthand, download_dir):
+def download_repo(repo_url_or_shorthand, download_dir, branch="main"):
     """Download the GitHub repository as a ZIP file and extract it."""
     repo_url = convert_to_full_url(repo_url_or_shorthand)
     repo_name = extract_repo_name_from_url(repo_url)
-    zip_url = f"{repo_url}/archive/refs/heads/main.zip"
+    zip_url = f"{repo_url}/archive/refs/heads/{branch}.zip"
     zip_path = os.path.join(download_dir, f"{repo_name}.zip")
 
     # Ensure the download directory exists
     if not os.path.exists(download_dir):
         os.makedirs(download_dir)
+
+    # Check if the branch exists by sending a head request
+    response = requests.head(zip_url)
+    if response.status_code == 404:
+        raise ValueError(f"The branch '{branch}' does not exist for the repository '{repo_url}'.")
 
     print(f"Downloading {zip_url} to {zip_path}")
     wget.download(zip_url, zip_path)
