@@ -23,13 +23,21 @@ pip install .
 Once installed, you can use the CLI command `repo2txt` to process a GitHub repository. Here’s the basic syntax:
 
 ```sh
-repo2txt --repo-url <repository_url> --output-file <output_file_path> --branch <branch_name> --config <config_file_path>
+repo2txt --repo-url <repository_url> --output-file <output_file_path> --branch <branch_name> --config <config_file_path> --local-path <local_path>
 ```
 
 ### Example
 
+From GitHub:
+
 ```sh
 repo2txt --repo-url https://github.com/example/repository.git --output-file output.txt --branch develop --config repo2txt/configs/config.json
+```
+
+Using a local folder:
+
+```sh
+repo2txt --local-path downloads/my-project --output-file output.txt  --config repo2txt/configs/config.json
 ```
 
 This command will:
@@ -44,12 +52,7 @@ In the config file you can specify which files you want to ignore when generatin
 
 ```json
 {
-    "ignore": [
-        "*.md",
-        "*.log",
-        "node_modules",
-        ".git"
-    ]
+  "ignore": ["*.md", "*.log", "node_modules", ".git"]
 }
 ```
 
