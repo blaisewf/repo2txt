@@ -17,7 +17,7 @@ setup(
     long_description_content_type="text/markdown",
     license="MIT",
     packages=find_packages(),
-    install_requires=["click", "wget", "tqdm"],
+    install_requires=["click", "wget", "tqdm", "requests"],
     entry_points={
         "console_scripts": [
             "repo2txt=repo2txt.cli:cli",
